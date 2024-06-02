@@ -1,45 +1,45 @@
-
-
-const router = require("express").Router();
-
-const { db } = require("../FirebaseConfig");
-// Import the userFollowing route
-const userFollowingRoute = require("./userFollowing");
-
-// Mount the userFollowing route
-router.use("userFollowing/:userId/", userFollowingRoute);
+const { db } = require("../db");
+const express = require("express");
+const router = express.Router();
 
 router.get("/:userId", async (req, res) => {
     try {
         const userId = req.params.userId;
 
-        // Call the userFollowing route to get the list of users the specified user follows
-        const response = await axios.get(`api/userFollowing/${userId}`);
-        console.log(response);
+        // Get the user document from Firestore
+        const userDoc = await db.collection('users').doc(userId).get();
 
-        // Extract the followingList from the response
-        const followingList = response.data.followingList;
+        // Check if the user document exists
+        if (!userDoc.exists) {
+            return res.status(404).send({ message: "User not found" });
+        }
 
-        // Fetch posts for each user the current user follows
+        // Get the followingList array from the user document
+        const followingList = userDoc.data().followingList;
+
+        if (!Array.isArray(followingList)) {
+            return res.status(400).send({ message: "Invalid following list" });
+        }
+
+        // Fetch posts from the posts collection where userId is in the followingList array
         const postsPromises = followingList.map(async (followedUserId) => {
-            // Query posts collection to get all posts where userId matches
-            const querySnapshot = await db.collection('posts').where('userId', '==', followedUserId).get();
-
-            // Extract post data from query snapshot
-            const posts = [];
-            querySnapshot.forEach(doc => {
-                posts.push({
-                    id: doc.id,
-                    ...doc.data()
+            try {
+                const querySnapshot = await db.collection('posts').where('userId', '==', followedUserId).get();
+                const posts = [];
+                querySnapshot.forEach(doc => {
+                    posts.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
                 });
-            });
-            return posts;
+                return posts;
+            } catch (error) {
+                console.error(`Error fetching posts for ${followedUserId}:`, error);
+                throw error; // Rethrow to ensure it's caught by the outer catch block
+            }
         });
 
-        // Wait for all posts to be fetched
         const allPosts = await Promise.all(postsPromises);
-
-        // Flatten the array of arrays into a single array
         const combinedPosts = allPosts.flat();
 
         res.status(200).send({ posts: combinedPosts });
