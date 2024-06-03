@@ -7,7 +7,8 @@ var cors = require('cors')
 const userFollowing = require("./routes/userFollowing");
 const userPosts = require("./routes/userPosts");
 const userFollowingPosts = require("./routes/userPosts");
-
+const followapi = require("./routes/followapi");
+const followerapi = require("./routes/followerapi");
 dotenv.config();
 
 
@@ -33,6 +34,9 @@ app.get('/', (req, res) => {
 app.use("/api/userFollowing", userFollowing);
 app.use("/api/userPosts", userPosts);
 app.use("/api/userFollowingPosts", userFollowingPosts);
+app.use("/api/follow", followapi);
+app.use("/api/follower", followerapi);
+
 
 
 // Start server
