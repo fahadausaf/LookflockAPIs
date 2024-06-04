@@ -1,7 +1,8 @@
 const { db } = require("../db");
 const express = require("express");
 const router = express.Router();
-const { FieldValue } = require('firebase-admin/firestore');
+const admin = require("firebase-admin"); // Ensure Firebase Admin is imported
+
 router.get("/:userId", async (req, res) => {
     try {
         const userId = req.params.userId;
@@ -14,14 +15,11 @@ router.get("/:userId", async (req, res) => {
             return res.status(404).send({ message: "User not found" });
         }
 
-        // Get the following sub-collection from the user document
-        const followingSnapshot = await db.collection('users').doc(userId).collection('following').get();
+        // Get the followingList array from the user document
+        const followingList = userDoc.data().followingList;
 
-        // Extract document IDs from the following sub-collection
-        const followingList = followingSnapshot.docs.map(doc => doc.id);
-
-        if (!Array.isArray(followingList) || followingList.length === 0) {
-            return res.status(400).send({ message: "Invalid or empty following list" });
+        if (!Array.isArray(followingList)) {
+            return res.status(400).send({ message: "Invalid following list" });
         }
 
         // Fetch posts from the posts collection where userId is in the followingList array
@@ -31,8 +29,8 @@ router.get("/:userId", async (req, res) => {
                 const posts = [];
                 querySnapshot.forEach(doc => {
                     posts.push({
-                        postId: doc.id, // Use doc.id as postId
-                       ...doc.data()
+                        id: doc.id,
+                        ...doc.data()
                     });
                 });
                 return posts;
@@ -44,24 +42,13 @@ router.get("/:userId", async (req, res) => {
 
         const allPosts = await Promise.all(postsPromises);
         const combinedPosts = allPosts.flat();
-        res.status(200).send( combinedPosts );
-        // Update or create documents in the newsFeed subcollection for each post
-        for (let post of combinedPosts) {
-            const postRef = db.collection('users').doc(userId).collection('newsFeed').doc(post.postId);
-            const postDoc = await postRef.get();
-            if (!postDoc.exists) {
-                // Document does not exist, create a new one with the post ID and current timestamp
-                await postRef.set({
-                    postId: post.id,
-                    timestamp: FieldValue.serverTimestamp(),
 
-                }, { merge: true }); // Using merge:true to avoid overwriting existing fields
-            }
-        }
+        // Save the posts to the newsFeed collection with the post ID as the document ID
+       
 
-        
+        res.status(200).send({ message: "Posts successfully pulled and saved to newsFeed", posts: combinedPosts }); 
     } catch (error) {
-        console.error("Error fetching posts:", error);
+        console.error("Error pulling posts:", error);
         res.status(500).send({ message: "Internal Server Error" });
     }
 });

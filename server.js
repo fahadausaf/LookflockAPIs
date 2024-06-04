@@ -6,8 +6,10 @@ const dotenv = require('dotenv');
 var cors = require('cors')
 const userFollowing = require("./routes/userFollowing");
 const userPosts = require("./routes/userPosts");
-const userFollowingPosts = require("./routes/userPosts");
-
+const userFollowingPosts = require("./routes/userFollowingPosts");
+const followapi = require("./routes/followapi");
+const followerapi = require("./routes/followerapi");
+const followBrand = require("./routes/followBrand");
 dotenv.config();
 
 
@@ -33,10 +35,12 @@ app.get('/', (req, res) => {
 app.use("/api/userFollowing", userFollowing);
 app.use("/api/userPosts", userPosts);
 app.use("/api/userFollowingPosts", userFollowingPosts);
-
+app.use("/api/follow", followapi);
+app.use("/api/follower", followerapi);
+app.use("/api/followBrand", followBrand);
 
 // Start server
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8082;
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 }).on('error', (err) => {

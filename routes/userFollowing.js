@@ -1,46 +1,27 @@
 const { db } = require("../db");
-const express = require("express");
-const router = express.Router();
-
-// Import the userFollowing route handler function
-const userFollowingHandler = require("./userFollowing");
+const router = require("express").Router();
 
 router.get("/:userId", async (req, res) => {
     try {
         const userId = req.params.userId;
 
-        // Instead of axios, call the handler function directly
-        const response = await userFollowingHandler(req, res);
+        // Get the user document from Firestore
+        const userDoc = await db.collection('users').doc(userId).get();
 
-        console.log(response);
+        // Check if the user document exists
+        if (!userDoc.exists) {
+            return res.status(404).send({ message: "User not found" });
+        }
 
-        const followingList = response.data.followingList;
-        console.log("Following List:", followingList);
+        // Get the following sub-collection from the user document
+        const followingSnapshot = await db.collection('users').doc(userId).collection('following').get();
 
-        const postsPromises = followingList.map(async (followedUserId) => {
-            try {
-                const querySnapshot = await db.collection('posts').where('userId', '==', followedUserId).get();
-                const posts = [];
-                querySnapshot.forEach(doc => {
-                    posts.push({
-                        id: doc.id,
-                        ...doc.data()
-                    });
-                });
-                return posts;
-            } catch (error) {
-                console.error(`Error fetching posts for ${followedUserId}:`, error);
-                throw error; // Rethrow to ensure it's caught by the outer catch block
-            }
-        });
+        // Extract document IDs and data from the following sub-collection
+        const followingList = followingSnapshot.docs.map(doc => ({ id: doc.id,type: doc.data().type || "" }));
 
-        const allPosts = await Promise.all(postsPromises);
-        console.log(allPosts);
-
-        const combinedPosts = allPosts.flat();
-        res.status(200).send({ posts: combinedPosts });
+        res.status(200).send(followingList);
     } catch (error) {
-        console.error("Error fetching posts:", error);
+        console.error("Error fetching following list:", error);
         res.status(500).send({ message: "Internal Server Error" });
     }
 });
