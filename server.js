@@ -10,6 +10,9 @@ const userFollowingPosts = require("./routes/userFollowingPosts");
 const followapi = require("./routes/followapi");
 const followerapi = require("./routes/followerapi");
 const followBrand = require("./routes/followBrand");
+
+
+
 dotenv.config();
 
 
@@ -38,6 +41,8 @@ app.use("/api/userFollowingPosts", userFollowingPosts);
 app.use("/api/follow", followapi);
 app.use("/api/follower", followerapi);
 app.use("/api/followBrand", followBrand);
+
+
 
 // Start server
 const PORT = process.env.PORT || 8082;
