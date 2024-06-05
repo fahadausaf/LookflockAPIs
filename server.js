@@ -13,6 +13,7 @@ const followerapi = require("./routes/followerapi");
 const followBrand = require("./routes/followBrand");
 const logoutFeed = require("./routes/logoutFeed");
 
+const generateBrandLog = require("./routes/brandLog");
 
 
 dotenv.config();
@@ -45,6 +46,7 @@ app.use("/api/follow", followapi);
 app.use("/api/follower", followerapi);
 app.use("/api/followBrand", followBrand);
 app.use("/api/logoutFeed", logoutFeed);
+app.use("/api/brandLog", generateBrandLog);
 
 
 
