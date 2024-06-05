@@ -2,6 +2,8 @@ const { db } = require("../db");
 const express = require("express");
 const router = express.Router();
 const { FieldValue } = require('firebase-admin/firestore');
+const fs = require('fs');
+const path = require('path');
 router.get("/:userId", async (req, res) => {
     try {
         const userId = req.params.userId;
@@ -23,7 +25,7 @@ router.get("/:userId", async (req, res) => {
         if (!Array.isArray(followingList) || followingList.length === 0) {
             return res.status(400).send({ message: "Invalid or empty following list" });
         }
-
+        const filePath = path.join(__dirname, 'userPosts1.json');
         // Fetch posts from the posts collection where userId is in the followingList array
         const postsPromises = followingList.map(async (followedUserId) => {
             try {
@@ -35,6 +37,7 @@ router.get("/:userId", async (req, res) => {
                        ...doc.data()
                     });
                 });
+                fs.writeFileSync(filePath, JSON.stringify(posts, null, 2));
                 return posts;
             } catch (error) {
                 console.error(`Error fetching posts for ${followedUserId}:`, error);

@@ -7,9 +7,11 @@ var cors = require('cors')
 const userFollowing = require("./routes/userFollowing");
 const userPosts = require("./routes/userPosts");
 const userFollowingPosts = require("./routes/userFollowingPosts");
+const userFollowingPosts2a = require("./routes/userFollowingPosts2a");
 const followapi = require("./routes/followapi");
 const followerapi = require("./routes/followerapi");
 const followBrand = require("./routes/followBrand");
+const logoutFeed = require("./routes/logoutFeed");
 
 
 
@@ -38,9 +40,11 @@ app.get('/', (req, res) => {
 app.use("/api/userFollowing", userFollowing);
 app.use("/api/userPosts", userPosts);
 app.use("/api/userFollowingPosts", userFollowingPosts);
+app.use("/api/userFollowingPosts2a", userFollowingPosts2a);
 app.use("/api/follow", followapi);
 app.use("/api/follower", followerapi);
 app.use("/api/followBrand", followBrand);
+app.use("/api/logoutFeed", logoutFeed);
 
 
 
