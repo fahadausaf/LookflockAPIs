@@ -12,6 +12,8 @@ const followapi = require("./routes/followapi");
 const followerapi = require("./routes/followerapi");
 const followBrand = require("./routes/followBrand");
 const logoutFeed = require("./routes/logoutFeed");
+const logPosts = require("./routes/logPosts");
+const finalPosts = require("./routes/finalPosts");
 
 const generateBrandLog = require("./routes/brandLog");
 
@@ -47,6 +49,8 @@ app.use("/api/follower", followerapi);
 app.use("/api/followBrand", followBrand);
 app.use("/api/logoutFeed", logoutFeed);
 app.use("/api/brandLog", generateBrandLog);
+app.use("/api/logPosts", logPosts);
+app.use("/api/finalPosts", finalPosts);
 
 
 
