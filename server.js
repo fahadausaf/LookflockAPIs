@@ -4,7 +4,7 @@ const http = require('http');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 var cors = require('cors')
-const userFollowing = require("./routes/userFollowing");
+const { router: userFollowing } = require("./routes/userFollowing");
 const userPosts = require("./routes/userPosts");
 const userFollowingPosts = require("./TestRoute/userFollowingPosts");
 const pullPosts = require("./routes/pullPosts");
@@ -12,7 +12,8 @@ const followapi = require("./routes/followapi");
 const followerapi = require("./routes/followerapi");
 const followBrand = require("./routes/followBrand");
 const logoutFeed = require("./routes/logoutFeed");
-const logPosts = require("./routes/logPosts");
+const {router: logPosts} = require("./routes/logPosts");
+const {router: followingPosts} = require("./routes/followingPosts");
 const finalPosts = require("./routes/finalPosts");
 
 const generateBrandLog = require("./routes/brandLog");
@@ -51,6 +52,7 @@ app.use("/api/logoutFeed", logoutFeed);
 app.use("/api/brandLog", generateBrandLog);
 app.use("/api/logPosts", logPosts);
 app.use("/api/finalPosts", finalPosts);
+app.use("/api/followingPosts", followingPosts);
 
 
 

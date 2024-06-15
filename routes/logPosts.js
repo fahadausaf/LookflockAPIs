@@ -1,19 +1,14 @@
 const { db } = require("../db");
-const express = require("express");
-const router = express.Router();
-const { FieldValue } = require('firebase-admin/firestore');
-const { v4: uuidv4 } = require('uuid'); // To generate unique IDs for images
+const router = require("express").Router();
 
-router.get("/:userId", async (req, res) => {
+const getLogPosts = async (userId) => {
     try {
-        const userId = req.params.userId;
-
         // Get the user document from Firestore
         const userDoc = await db.collection('users').doc(userId).get();
 
         // Check if the user document exists
         if (!userDoc.exists) {
-            return res.status(404).send({ message: "User not found" });
+            throw new Error("User not found");
         }
 
         // Fetch log documents from the logs subcollection
@@ -43,16 +38,24 @@ router.get("/:userId", async (req, res) => {
 
             const postsSnapshot = await postsQuery.get();
             const posts = postsSnapshot.docs.map(doc => doc.data());
-            allPosts = [...allPosts,...posts];
+            allPosts = [...allPosts, ...posts];
         }
 
-        // Respond with the aggregated posts
-        res.send(allPosts);
-
+        return allPosts;
     } catch (error) {
         console.error("Error fetching posts:", error);
-        res.status(500).send({ message: "Internal Server Error" });
+        throw new Error("Internal Server Error");
+    }
+};
+
+router.get("/:userId", async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const allPosts = await getLogPosts(userId);
+        res.status(200).send(allPosts);
+    } catch (error) {
+        res.status(error.message === "User not found" ? 404 : 500).send({ message: error.message });
     }
 });
 
-module.exports = router;
+module.exports = { router, getLogPosts };
