@@ -1,10 +1,14 @@
 const router = require("express").Router();
-const { doc, writeBatch, arrayRemove } = require('@firebase/firestore');
+const { doc, writeBatch, arrayRemove, deleteDoc } = require('@firebase/firestore');
 const { db } = require("../FirebaseConfig");
 
 const unfollowUser = async (senderId, receiverId) => {
     try {
         console.log('UnFollowing user');
+
+        //TO BE REMOVED AFTER CHANGING IN THE FRONTEND
+        //FROM HERE
+
         // Start a batched write to perform multiple updates atomically
         const batch = writeBatch(db);
 
@@ -23,6 +27,12 @@ const unfollowUser = async (senderId, receiverId) => {
         });
 
         await batch.commit();
+        //TO HERE
+
+        const senderRef = doc(db, "users", senderId, "following", receiverId)
+        const receiverRef = doc(db, "users", receiverId, "followers", senderId)
+        await deleteDoc(senderRef)
+        await deleteDoc(receiverRef)
 
         console.log('Unfollowed user successfully!');
     } catch (error) {
