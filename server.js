@@ -20,6 +20,7 @@ const generateBrandLog = require("./routes/brandLog");
 const emailService = require('./routes/emailService')
 const followUser = require('./routes/followUser')
 const unfollowUser = require('./routes/unfollowUser')
+const likePost = require('./routes/likePost')
 dotenv.config();
 
 
@@ -58,6 +59,7 @@ app.use("/api/followingPosts", followingPosts);
 app.use("/api/sendemail", emailService);
 app.use("/api/followUser", followUser);
 app.use("/api/unfollowUser", unfollowUser);
+app.use("/api/likePost", likePost);
 
 
 
