@@ -1,6 +1,6 @@
 // routes/follow.js
 const { FieldValue } = require('firebase-admin/firestore');
-const { db } = require('../FirebaseConfig');
+const { db } = require('../db');
 const express = require("express");
 const router = express.Router();
 // Route to handle following a user or a brand
