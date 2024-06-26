@@ -12,13 +12,13 @@ const followapi = require("./routes/followapi");
 const followerapi = require("./routes/followerapi");
 const followBrand = require("./routes/followBrand");
 const logoutFeed = require("./routes/logoutFeed");
-const {router: logPosts} = require("./routes/logPosts");
-const {router: followingPosts} = require("./routes/followingPosts");
+const { router: logPosts } = require("./routes/logPosts");
+const { router: followingPosts } = require("./routes/followingPosts");
 const finalPosts = require("./routes/finalPosts");
-
 const generateBrandLog = require("./routes/brandLog");
-
-
+const emailService = require('./routes/emailService')
+const followUser = require('./routes/followUser')
+const unfollowUser = require('./routes/unfollowUser')
 dotenv.config();
 
 
@@ -30,7 +30,7 @@ const server = http.createServer(app);
 app.use(cors())
 // Middleware
 app.use(express.json());
-  
+
 // MongoDB Connection
 
 
@@ -53,6 +53,9 @@ app.use("/api/brandLog", generateBrandLog);
 app.use("/api/logPosts", logPosts);
 app.use("/api/finalPosts", finalPosts);
 app.use("/api/followingPosts", followingPosts);
+app.use("/api/sendemail", emailService);
+app.use("/api/followUser", followUser);
+app.use("/api/unfollowUser", unfollowUser);
 
 
 
