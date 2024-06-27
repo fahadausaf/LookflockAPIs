@@ -1,6 +1,7 @@
 const { db } = require("../db");
 const router = require("express").Router();
 
+
 const getLogPosts = async (userId) => {
     try {
         // Get the user document from Firestore
@@ -37,7 +38,11 @@ const getLogPosts = async (userId) => {
             }
 
             const postsSnapshot = await postsQuery.get();
-            const posts = postsSnapshot.docs.map(doc => doc.data());
+            const posts = postsSnapshot.docs.map((doc) => ({
+                
+                ...doc.data(),
+                id: doc.id
+              }));
             allPosts = [...allPosts, ...posts];
         }
 
@@ -47,6 +52,24 @@ const getLogPosts = async (userId) => {
         throw new Error("Internal Server Error");
     }
 };
+
+
+/**
+ * GET /:userId
+ * 
+ * Endpoint to fetch posts based on a user's logs.
+ * 
+ * @name PostsFromLog
+ * @function
+ * @memberof module:router
+ * @param {Object} req - Express request object.
+ * @param {Object} req.params - The route parameters.
+ * @param {string} req.params.userId - The ID of the user whose log posts are to be fetched.
+ * @param {Object} res - Express response object.
+ * @returns {Object} 200 - An array of posts based on the user's logs.
+ * @returns {Object} 404 - User not found.
+ * @returns {Object} 500 - Internal Server Error.
+ */
 
 router.get("/:userId", async (req, res) => {
     try {

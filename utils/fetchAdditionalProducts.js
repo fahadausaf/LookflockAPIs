@@ -2,7 +2,7 @@ const { db } = require("../db");
 
 const fetchAdditionalProducts = async (userFavCategories, category, combinedPosts) => {
     if (combinedPosts.length < 20) {
-        const productsPromises = userFavCategories.map(async favCategory => {
+        const productsPromises = userFavCategories?.map(async favCategory => {
             const subCategory = Object.keys(favCategory)[0];
             const subSubCategory = favCategory[subCategory];
 

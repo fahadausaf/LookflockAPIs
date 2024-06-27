@@ -1,6 +1,25 @@
+
 const { db } = require("../db");
 
 const router = require("express").Router();
+
+
+/**
+ * GET /:userId
+ * 
+ * Fetches all posts for a specific user from the database.
+ * 
+ * @name UserPosts /:userId
+ * @function
+ * @memberof module:router
+ * @param {Object} req - Express request object.
+ * @param {Object} req.params - The route parameters.
+ * @param {string} req.params.userId - The ID of the user whose posts are to be fetched.
+ * @param {Object} res - Express response object.
+ * @returns {Object} 200 - An object containing an array of posts.
+ * @returns {Object} 404 - No posts found for this user.
+ * @returns {Object} 500 - Internal Server Error.
+ */
 
 router.get("/:userId", async (req, res) => {
     try {
