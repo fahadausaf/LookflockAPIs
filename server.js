@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 var cors = require('cors')
 const { router: userFollowing } = require("./routes/userFollowing");
+const { router: userFollowers } = require("./routes/userFollowers");
 const userPosts = require("./routes/userPosts");
 const userFollowingPosts = require("./TestRoute/userFollowingPosts");
 const pullPosts = require("./routes/pullPosts");
@@ -44,6 +45,7 @@ app.get('/', (req, res) => {
 
 // routes
 app.use("/api/userFollowing", userFollowing);
+app.use("/api/userFollowers", userFollowers);
 app.use("/api/userPosts", userPosts);
 app.use("/api/userFollowingPosts", userFollowingPosts);
 app.use("/api/pullPosts", pullPosts);
