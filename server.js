@@ -22,6 +22,7 @@ const emailService = require('./routes/emailService')
 const followUser = require('./routes/followUser')
 const unfollowUser = require('./routes/unfollowUser')
 const likePost = require('./routes/likePost')
+const functions = require('firebase-functions')
 dotenv.config();
 
 
@@ -77,3 +78,5 @@ server.listen(PORT, () => {
         throw err;
     }
 });
+
+exports.api = functions.https.onRequest(app)
