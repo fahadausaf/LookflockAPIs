@@ -1,6 +1,6 @@
 // routes/follow.js
 const { FieldValue } = require('firebase-admin/firestore');
-const { db } = require("../db");
+const { db } = require('../db');
 const express = require("express");
 const router = express.Router();
 // Route to handle following a user or a brand
@@ -16,7 +16,7 @@ router.post("/:userId", async (req, res) => {
         const userId = req.params.userId;
 
         // Define the collection path
-                
+
         // Create the subcollection document
         const followRef = db.collection('users').doc(userId).collection("following").doc(id);
 

@@ -60,7 +60,8 @@ router.get("/:userId", async (req, res) => {
 
         // If combinedPosts length is less than 20, fetch additional products
         if (combinedPosts?.length < 20) {
-            combinedPosts = await fetchAdditionalProducts(userFavCategories, category, combinedPosts);
+  
+        combinedPosts = await fetchAdditionalProducts(userFavCategories, category, combinedPosts);
         }
 
         // Rank posts by weight

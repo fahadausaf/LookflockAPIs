@@ -1,6 +1,6 @@
 // routes/follow.js
 const { FieldValue } = require('firebase-admin/firestore');
-const { db } = require("../db");
+const { db } = require('../db');
 const express = require("express");
 const router = express.Router();
 
@@ -16,7 +16,7 @@ router.post("/:userId", async (req, res) => {
 
         const userId = req.params.userId;
 
-        
+
         // Check if the user document exists
         const userDocRef = db.collection('users').doc(userId);
         const userDoc = await userDocRef.get();

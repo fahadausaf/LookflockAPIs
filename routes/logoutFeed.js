@@ -1,4 +1,4 @@
-const { db } = require("../db");
+const { db } = require('../db');
 const express = require("express");
 const router = express.Router();
 const admin = require("firebase-admin"); // Ensure Firebase Admin is imported

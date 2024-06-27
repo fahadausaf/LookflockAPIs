@@ -1,5 +1,6 @@
 
 const firebase = require("firebase/app");
+const { getFirestore } = require('@firebase/firestore')
 // Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyDPudf5GpuW108ENzYoKnGfcrk7L3FVCcA",
@@ -11,15 +12,15 @@ const firebaseConfig = {
     measurementId: "G-S1V4LT801T"
 };
 
-firebase.initializeApp(firebaseConfig)
+// firebase.initializeApp(firebaseConfig)
 // Initialize Firebase
 // const app = initializeApp({
 //   credential: applicationDefault(),
 //   ...firebaseConfig
 // });
- 
+
 // Initialize Firestore and Storage
-const db = firebase.firestore()
+const app = firebase.getApps().length ? firebase.getApp() : firebase.initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-
-// module.exports = {db} ;
+module.exports = { db };
