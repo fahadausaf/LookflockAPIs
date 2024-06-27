@@ -5,30 +5,6 @@ const { db } = require("../FirebaseConfig");
 const unfollowUser = async (senderId, receiverId) => {
     try {
         console.log('UnFollowing user');
-
-        //TO BE REMOVED AFTER CHANGING IN THE FRONTEND
-        //FROM HERE
-
-        // Start a batched write to perform multiple updates atomically
-        const batch = writeBatch(db);
-
-        // Reference to the sender's and receiver's documents
-        const senderDocRef = doc(db, 'users', senderId);
-        const receiverDocRef = doc(db, 'users', receiverId);
-
-        // Remove receiverId from sender's followingList
-        batch.update(senderDocRef, {
-            'followingList': arrayRemove(receiverId),
-        });
-
-        // Remove senderId from receiver's followerList
-        batch.update(receiverDocRef, {
-            'followerList': arrayRemove(senderId),
-        });
-
-        await batch.commit();
-        //TO HERE
-
         const senderRef = doc(db, "users", senderId, "following", receiverId)
         const receiverRef = doc(db, "users", receiverId, "followers", senderId)
         await deleteDoc(senderRef)

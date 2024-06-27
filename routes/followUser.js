@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { doc, writeBatch, arrayUnion, getDoc, serverTimestamp, setDoc } = require('@firebase/firestore');
+const { doc, writeBatch, arrayUnion, getDoc, serverTimestamp, setDoc, updateDoc } = require('@firebase/firestore');
 const { db } = require("../FirebaseConfig");
 
 const followUser = async (senderId, receiverId) => {
@@ -15,28 +15,10 @@ const followUser = async (senderId, receiverId) => {
         const following = { timestamp, receiverId };
         userLogsUpdate[`userlogs.Following`] = arrayUnion(following);
 
-
-        //This will remove later after the final implementation
-        //FROM HERE
-
         // Reference to the sender's and receiver's documents
         const senderDocRef = doc(db, 'users', senderId);
-        const receiverDocRef = doc(db, 'users', receiverId);
-        // Start a batched write to perform multiple updates atomically
-        const batch = writeBatch(db);
-        batch.update(senderDocRef, userLogsUpdate);
-        batch.update(senderDocRef, {
-            'followingList': arrayUnion(receiverId),
-        });
+        await updateDoc(senderDocRef, userLogsUpdate)
 
-        // Update the status of the friend request for the receiver
-        // Remove from 'pending' and add to 'active'
-        batch.update(receiverDocRef, {
-            'followerList': arrayUnion(senderId),
-        });
-        // Commit the batched write
-        await batch.commit();
-        //TO HERE
 
         const senderRef = doc(db, "users", senderId, "following", receiverId)
         const receiverRef = doc(db, "users", receiverId, "followers", senderId)
