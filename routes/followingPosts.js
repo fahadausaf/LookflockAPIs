@@ -1,6 +1,8 @@
+
 const { db } = require('../db');
 const express = require("express");
 const router = express.Router();
+
 
 const followingPosts = async (followingList, category, userFavCategories) => {
     try {
@@ -27,9 +29,10 @@ const followingPosts = async (followingList, category, userFavCategories) => {
                     return post.subCategory === subCategory && post.subSubCategory === subSubCategory;
                 })) {
                     posts.push({
-                        id: doc.id, // Use doc.id as postId
+                         // Use doc.id as postId
                         weight: weight,
-                        ...post
+                        ...post,
+                        id: doc.id,
                     });
                 }
             });
@@ -42,6 +45,27 @@ const followingPosts = async (followingList, category, userFavCategories) => {
         throw error;
     }
 };
+
+
+/**
+ * 
+ * 
+ * Endpoint to fetch posts for users or categories that a user is following.
+ * 
+ * @name followingPosts
+ * @function
+ * @memberof module:router
+ * @param {Object} req - Express request object.
+ * @param {Object} req.query - The query parameters.
+ * @param {string} req.query.followingList - JSON stringified array of followed user/category objects.
+ * @param {string} req.query.category - The category to filter posts by.
+ * @param {string} req.query.userFavCategories - JSON stringified array of user's favorite categories and sub-categories.
+ * @param {Object} res - Express response object.
+ * @returns {Object} 200 - An array of arrays, each containing posts.
+ * @returns {Object} 400 - Missing parameters.
+ * @returns {Object} 500 - Internal Server Error.
+ */
+
 
 router.get("/", async (req, res) => {
     try {

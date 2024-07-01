@@ -17,12 +17,17 @@ const logoutFeed = require("./routes/logoutFeed");
 const { router: logPosts } = require("./routes/logPosts");
 const { router: followingPosts } = require("./routes/followingPosts");
 const finalPosts = require("./routes/finalPosts");
+const newsFeedPagination = require("./routes/newsFeedPagination");
+
 const generateBrandLog = require("./routes/brandLog");
+const { router: fetchRecentPosts } = require("./routes/fetchRecentPosts");
 const emailService = require('./routes/emailService')
 const followUser = require('./routes/followUser')
 const unfollowUser = require('./routes/unfollowUser')
 const likePost = require('./routes/likePost')
 const functions = require('firebase-functions')
+const status = require('express-status-monitor')
+
 dotenv.config();
 
 
@@ -45,6 +50,7 @@ app.get('/', (req, res) => {
 
 
 // routes
+app.use(status());
 app.use("/api/userFollowing", userFollowing);
 app.use("/api/userFollowers", userFollowers);
 app.use("/api/userPosts", userPosts);
@@ -59,6 +65,8 @@ app.use("/api/brandLog", generateBrandLog);
 app.use("/api/logPosts", logPosts);
 app.use("/api/finalPosts", finalPosts);
 app.use("/api/followingPosts", followingPosts);
+app.use("/api/newsFeed", newsFeedPagination);
+app.use("/api/recentPosts", fetchRecentPosts);
 app.use("/api/sendemail", emailService);
 app.use("/api/followUser", followUser);
 app.use("/api/unfollowUser", unfollowUser);
