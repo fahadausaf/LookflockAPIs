@@ -6,7 +6,7 @@ const { getUserFollowing } = require('./userFollowing');
 const { getLogPosts } = require('./logPosts');
 const { shufflePosts } = require("../utils/sufflePosts");
 const { followingPosts } = require('./followingPosts');
-const fetchAdditionalProducts = require('../utils/fetchAdditionalProducts');
+const fetchAdditionalProducts = require('./fetchAdditionalProducts');
 const { updateNewsFeed } = require("./updateNewsFeed");
 
 router.get("/:userId", async (req, res) => {

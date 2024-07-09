@@ -21,6 +21,12 @@ const newsFeedPagination = require("./routes/newsFeedPagination");
 
 const generateBrandLog = require("./routes/brandLog");
 const {router: fetchRecentPosts} = require("./routes/fetchRecentPosts");
+const {router: fetchAdditionalProducts} = require("./routes/fetchAdditionalProducts");
+const {router: newsFeedProducts} = require("./routes/newsFeedProducts");
+const {router: newsFeedProducts2} = require("./routes/newsFeedProducts2");
+const newsFeedProductsPagination= require("./routes/newsFeedProductsPagination");
+
+
 const emailService = require('./routes/emailService')
 const followUser = require('./routes/followUser')
 const unfollowUser = require('./routes/unfollowUser')
@@ -66,6 +72,11 @@ app.use("/api/finalPosts", finalPosts);
 app.use("/api/followingPosts", followingPosts);
 app.use("/api/newsFeed", newsFeedPagination);
 app.use("/api/recentPosts", fetchRecentPosts);
+app.use("/api/fetchAdditionalProducts", fetchAdditionalProducts);
+app.use("/api/newsFeedProducts", newsFeedProducts);
+app.use("/api/newsFeedProducts2", newsFeedProducts2);
+app.use("/api/newsFeedProductsPagination", newsFeedProductsPagination);
+
 app.use("/api/sendemail", emailService);
 app.use("/api/followUser", followUser);
 app.use("/api/unfollowUser", unfollowUser);
