@@ -1,9 +1,9 @@
 // server.js
-const express = require('express');
-const http = require('http');
-const bodyParser = require('body-parser');
-const dotenv = require('dotenv');
-var cors = require('cors')
+const express = require("express");
+const http = require("http");
+const bodyParser = require("body-parser");
+const dotenv = require("dotenv");
+var cors = require("cors");
 const { router: userFollowing } = require("./routes/userFollowing");
 const { router: userFollowers } = require("./routes/userFollowers");
 const userPosts = require("./routes/userPosts");
@@ -21,33 +21,34 @@ const newsFeedPagination = require("./routes/newsFeedPagination");
 
 const generateBrandLog = require("./routes/brandLog");
 const { router: fetchRecentPosts } = require("./routes/fetchRecentPosts");
-const emailService = require('./routes/emailService')
-const followUser = require('./routes/followUser')
-const unfollowUser = require('./routes/unfollowUser')
-const likePost = require('./routes/likePost')
-const functions = require('firebase-functions')
-const status = require('express-status-monitor')
+const {
+  router: fetchAdditionalProducts,
+} = require("./routes/fetchAdditionalProducts");
+const { router: newsFeedProducts } = require("./routes/newsFeedProducts");
+const { router: newsFeedProducts2 } = require("./routes/newsFeedProducts2");
+const newsFeedProductsPagination = require("./routes/newsFeedProductsPagination");
+
+const emailService = require("./routes/emailService");
+const followUser = require("./routes/followUser");
+const unfollowUser = require("./routes/unfollowUser");
+const likePost = require("./routes/likePost");
+const functions = require("firebase-functions");
+const status = require("express-status-monitor");
 
 dotenv.config();
 
-
-
-
-
 const app = express();
 const server = http.createServer(app);
-app.use(cors())
+app.use(cors());
 // Middleware
 app.use(express.json());
 
 // MongoDB Connection
 
-
 // Sample Route
-app.get('/', (req, res) => {
-    res.send('Hello World!');
+app.get("/", (req, res) => {
+  res.send("Hello World!");
 });
-
 
 // routes
 app.use(status());
@@ -67,24 +68,31 @@ app.use("/api/finalPosts", finalPosts);
 app.use("/api/followingPosts", followingPosts);
 app.use("/api/newsFeed", newsFeedPagination);
 app.use("/api/recentPosts", fetchRecentPosts);
+app.use("/api/fetchAdditionalProducts", fetchAdditionalProducts);
+app.use("/api/newsFeedProducts", newsFeedProducts);
+app.use("/api/newsFeedProducts2", newsFeedProducts2);
+app.use("/api/newsFeedProductsPagination", newsFeedProductsPagination);
+
 app.use("/api/sendemail", emailService);
 app.use("/api/followUser", followUser);
 app.use("/api/unfollowUser", unfollowUser);
 app.use("/api/likePost", likePost);
 
-
-
 // Start server
 const PORT = process.env.PORT || 8082;
-server.listen(PORT, () => {
+server
+  .listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-}).on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-        console.log(`Port ${PORT} is already in use. Please close the other application or use a different port.`);
-        process.exit(1);
+  })
+  .on("error", (err) => {
+    if (err.code === "EADDRINUSE") {
+      console.log(
+        `Port ${PORT} is already in use. Please close the other application or use a different port.`
+      );
+      process.exit(1);
     } else {
-        throw err;
+      throw err;
     }
-});
+  });
 
-exports.api = functions.https.onRequest(app)
+exports.api = functions.https.onRequest(app);

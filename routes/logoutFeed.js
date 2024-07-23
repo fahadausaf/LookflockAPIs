@@ -42,8 +42,9 @@ router.get("/", async (req, res) => {
                 const posts = [];
                 querySnapshot.forEach(doc => {
                     posts.push({
-                        id: doc.id,
-                        ...doc.data()
+                        
+                        ...doc.data(),
+                        brandId: doc.data().id,
                     });
                 });
                 return posts;

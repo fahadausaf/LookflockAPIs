@@ -38,7 +38,8 @@ router.get('/:userId', async (req, res) => {
         const querySnapshot = await query.get();
         const newsFeedItems = querySnapshot.docs.map(doc => ({
             id: doc.id,
-            ...doc.data()
+            ...doc.data(),
+            
         }));
 
          // Fetch additional data based on `by` field
@@ -46,20 +47,25 @@ router.get('/:userId', async (req, res) => {
             if (item.by === 'product') {
                 const productDoc = await db.collection('products').doc(item.id).get();
                 return {
-                    ...item,
-                 ...productDoc.exists ? productDoc.data() : null
+                    
+                 ...productDoc.exists ? productDoc.data() : null,
+                 ...item,
                 };
             } else if (item.by === 'brand' ) {
                 const postDoc = await db.collection('posts').doc(item.id).get();
                 return {
-                    ...item,
-                 ...postDoc.exists ? postDoc.data() : null
+                    
+                 ...postDoc.exists ? postDoc.data() : null,
+                 brandId:postDoc.data().id,
+                 ...item,
                 };
             }else if (item.by === 'user') {
                 const postDoc = await db.collection('posts').doc(item.id).get();
                 let detailedItem = {
+                  
+                  ...(postDoc.exists ? postDoc.data() : null),
+                  userId:postDoc.data().id,
                   ...item,
-                  ...(postDoc.exists ? postDoc.data() : null)
                 };
                 
                 if (detailedItem?.type === 'image' || detailedItem?.type === 'video') {
