@@ -20,10 +20,13 @@ const finalPosts = require("./routes/finalPosts");
 const newsFeedPagination = require("./routes/newsFeedPagination");
 
 const generateBrandLog = require("./routes/brandLog");
+const {router:logs} = require("./routes/log");
 const {router: fetchRecentPosts} = require("./routes/fetchRecentPosts");
+const {router: brandFeed} = require("./routes/brandFeed");
 const {router: fetchAdditionalProducts} = require("./routes/fetchAdditionalProducts");
 const {router: newsFeedProducts} = require("./routes/newsFeedProducts");
 const {router: newsFeedProducts2} = require("./routes/newsFeedProducts2");
+const {router: productLog} = require("./routes/productLog");
 const newsFeedProductsPagination= require("./routes/newsFeedProductsPagination");
 
 
@@ -31,6 +34,7 @@ const emailService = require('./routes/emailService')
 const followUser = require('./routes/followUser')
 const unfollowUser = require('./routes/unfollowUser')
 const likePost = require('./routes/likePost')
+const like = require('./routes/like')
 const status = require('express-status-monitor')
 
 dotenv.config();
@@ -72,6 +76,10 @@ app.use("/api/finalPosts", finalPosts);
 app.use("/api/followingPosts", followingPosts);
 app.use("/api/newsFeed", newsFeedPagination);
 app.use("/api/recentPosts", fetchRecentPosts);
+app.use("/api/brandFeed", brandFeed);
+app.use("/api/logs", logs);
+app.use("/api/productLog", productLog);
+
 app.use("/api/fetchAdditionalProducts", fetchAdditionalProducts);
 app.use("/api/newsFeedProducts", newsFeedProducts);
 app.use("/api/newsFeedProducts2", newsFeedProducts2);
@@ -81,6 +89,7 @@ app.use("/api/sendemail", emailService);
 app.use("/api/followUser", followUser);
 app.use("/api/unfollowUser", unfollowUser);
 app.use("/api/likePost", likePost);
+app.use("/api/like", like);
 
 
 

@@ -1,6 +1,7 @@
 const { db } = require('../FirebaseConfig');
 const router = require("express").Router();
 const { doc, updateDoc, setDoc, serverTimestamp, getDoc, arrayUnion } = require("@firebase/firestore");
+const { saveLog } = require('./log');
 
 const followBrand = async (brandId, userId) => {
   try {
@@ -44,6 +45,7 @@ router.post('/', async (req, res) => {
   try {
     await followBrand(brandId, userId);
     res.status(200).send('Brand followed successfully');
+    saveLog(userId,brandId)
   } catch (error) {
     console.error(error);
     res.status(500).send('Error following brand');
