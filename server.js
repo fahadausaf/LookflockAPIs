@@ -18,7 +18,8 @@ const { router: logPosts } = require("./routes/logPosts");
 const { router: followingPosts } = require("./routes/followingPosts");
 const finalPosts = require("./routes/finalPosts");
 const newsFeedPagination = require("./routes/newsFeedPagination");
-
+const activity = require("./routes/UserActivityLog");
+const ProductReview = require("./routes/ProductReview");
 const generateBrandLog = require("./routes/brandLog");
 const {router:logs} = require("./routes/log");
 const {router: fetchRecentPosts} = require("./routes/fetchRecentPosts");
@@ -91,8 +92,8 @@ app.use("/api/unfollowUser", unfollowUser);
 app.use("/api/likePost", likePost);
 app.use("/api/like", like);
 
-
-
+app.use("/api/activity", activity);
+app.use("/api/review",ProductReview);
 // Start server
 const PORT = process.env.PORT || 8082;
 server.listen(PORT, () => {
