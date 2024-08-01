@@ -29,7 +29,7 @@ const newsFeedProducts = async (userFavCategories, category, combinedPosts,limit
         if (subSubCategory) {
             query = query.where('subSubCategory', '==', subSubCategory);
         }
-        query = query.orderBy('dateCreated', 'desc');
+        // query = query.orderBy('dateCreated', 'desc');
 
         console.log("The last doc is ",lastDoc);
         
@@ -159,7 +159,7 @@ router.get("/:userId", async (req, res) => {
         //     nextLastDoc = result.nextLastDoc;
         // }
         
-        combinedPosts =await newsFeedProductsWithoutBrands(userFavCategories, category, combinedPosts,10,followedBrands,lastDoc = null,userId)
+        combinedPosts =await newsFeedProductsWithoutBrands(userFavCategories, category, combinedPosts,10,followedBrands,userId)
 
         // combinedPosts = shufflePosts(combinedPosts);
         // Save posts to newsFeed2 subcollection
@@ -174,6 +174,7 @@ router.get("/:userId", async (req, res) => {
                 batch.set(postRef, {
                     ...post,
                     timestamp: FieldValue.serverTimestamp(),
+                    viewed:0
                 });
                 newPostCount++;
                 console.log("newPostCount", newPostCount, post.id,post.supplier);
@@ -191,6 +192,7 @@ router.get("/:userId", async (req, res) => {
         });
 
         res.status(200).send({ posts: combinedPosts, nextCursor: nextLastDoc ? nextLastDoc.id : null });
+        // res.status(200).send(`${combinedPosts.length}`);
     } catch (error) {
         console.log(error);
         res.status(error.message === "Product not found" ? 404 : 500).send({ message: error.message });

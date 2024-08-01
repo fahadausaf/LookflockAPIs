@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const { doc, writeBatch, arrayUnion, getDoc, query, collection, where, getDocs, addDoc, updateDoc } = require('@firebase/firestore');
 const { db } = require("../FirebaseConfig");
+const { saveLog } = require("./log");
 
 let counter = 0
 const handleLikeClick = async (userId, product) => {
@@ -25,35 +26,6 @@ const handleLikeClick = async (userId, product) => {
         const brandUpdate = { likes: currentLikes + 1 };
         batch.update(brandRef, brandUpdate);
 
-
-        // Check if there's an existing log entry
-        const logQuery = query(
-            collection(userRef, "logs"),
-            where("brandName", "==", product.supplier),
-            where("category", "==", product.category),
-            where("subCategory", "==", product.subCategory),
-            where("subSubCategory", "==", product.subSubCategory)
-        );
-
-        const logSnapshot = await getDocs(logQuery);
-
-        if (!logSnapshot.empty) {
-            // If a matching log entry is found, update its timestamp
-            const logDocRef = logSnapshot.docs[0].ref;
-            batch.update(logDocRef, { timestamp });
-        } else {
-            // Add log entry in user's logs subcollection if no matching entry is found
-            const logRef = collection(userRef, "logs");
-            await addDoc(logRef, {
-                brandName: product.supplier,
-                category: product.category,
-                subCategory: product.subCategory,
-                subSubCategory: product.subSubCategory,
-                timestamp: timestamp
-            });
-        }
-
-        await batch.commit();
 
         const userSnapshot = await getDoc(userRef);
         let likeList = userSnapshot.data().likeList || [];
@@ -87,6 +59,9 @@ router.post("/", async (req, res) => {
         let { userId, product } = req.body;
         await handleLikeClick(userId, product);
         res.status(200).send({ message: "Followed user successfully" });
+        
+        await saveLog(userId,product.supplier,product.category,product.subCategory,product.subSubCategory,product.newPrice,product.discount)
+
     } catch (error) {
         console.error("Error following:", error);
         res.status(500).send({ message: "Internal Server Error" });

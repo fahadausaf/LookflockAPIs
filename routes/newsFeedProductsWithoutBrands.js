@@ -5,16 +5,18 @@ const { FieldValue } = require('firebase-admin/firestore');
 
 const seenProductIds = new Set();
 
-const newsFeedProductsWithoutBrands = async (userFavCategories, category, combinedPosts,limit=10,followedBrands, d,userId) => {
+const newsFeedProductsWithoutBrands = async (userFavCategories, category,limit=10,followedBrands,userId) => {
     console.log("Product followedBrands", followedBrands);
     limit = parseInt(limit) || 10
 
     let lastDocId = null;
 
         let lastDoc = null;
+        console.log("I am herre");
         // Fetch the last document from newsFeed2 subcollection
         const newsFeed2Collection = db.collection('users').doc(userId).collection('newsFeed2');
-        const lastDocSnapshot = await newsFeed2Collection.orderBy('timestamp', 'asc').where('interest', '==', false).limit(1).get();
+        
+        const lastDocSnapshot = await newsFeed2Collection.orderBy('timestamp', 'desc').where('interest', '==', false).limit(1).get();
 
         if (!lastDocSnapshot.empty) {
             lastDoc = lastDocSnapshot.docs[0];
@@ -74,12 +76,16 @@ const newsFeedProductsWithoutBrands = async (userFavCategories, category, combin
 
     const productsResults = await Promise.all(productsPromises);
     const additionalProducts = productsResults.flatMap(result => result.products);
-    combinedPosts = combinedPosts.concat(additionalProducts);
+   
+
+    for(const product of additionalProducts){
+        console.log("newsFeedProductsWithoutBrands retured",product.supplier);
+    }
 
     const lastDocs = productsResults.map(result => result.lastDoc);
     const nextLastDoc = lastDocs.length ? lastDocs[lastDocs.length - 1] : null;
 
-    return  combinedPosts ;
+    return  additionalProducts ;
 };
 
 // Fetch user's favorite categories and followed brands
