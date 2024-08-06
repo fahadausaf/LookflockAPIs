@@ -4,4 +4,3 @@
 node_modules/
 # Firebase service account key
 serviceAccountKey.json
-emailConfig.js
